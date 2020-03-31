@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Дмитрий Харченко](https://up.htmlacademy.ru/ecmascript/11/user/829899).
-* Наставник: `Неизвестно`.
+* Наставник: [Роман Лаврик](https://htmlacademy.ru/profile/id1401993).
 
 ---
 
