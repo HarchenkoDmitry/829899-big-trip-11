@@ -97,6 +97,17 @@ const createSortTemplate = () => {
   );
 };
 
+const createEventsListTemplate = () => {
+  return (
+    `<ul class="trip-events__list">
+      ${createEventEditTemplate()}
+      ${createEventTemplate()}
+      ${createEventTemplate()}
+      ${createEventTemplate()}
+    </ul>`
+  );
+};
+
 const createEventTemplate = () => {
   return (
     `<li class="trip-events__item">
@@ -323,12 +334,8 @@ const createTripDaysListTemplate = () => {
           <time class="day__date" datetime="2019-03-18">MAR 18</time>
         </div>
 
-        <ul class="trip-events__list">
-          ${createEventEditTemplate()}
-          ${createEventTemplate()}
-          ${createEventTemplate()}
-          ${createEventTemplate()}
-        </ul>
+        ${createEventsListTemplate()}
+
       </li>
     </ul>`
   );
