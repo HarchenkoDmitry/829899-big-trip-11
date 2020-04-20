@@ -6,7 +6,7 @@ import {DESTINATIONS, OFFERS, RANDOM_TEXT, ROUTE_POINTS_TYPES, ROUTE_POINTS_TYPE
 
 export const generateRoutePoint = () => {
   const typeName = random.arrayItem(ROUTE_POINTS_TYPES_NAMES);
-  const type = ROUTE_POINTS_TYPES.find((typesItem) => typesItem.name === typeName);
+  const type = ROUTE_POINTS_TYPES[typeName];
 
   const offersData = OFFERS.filter((offer) => offer.type === typeName);
   const offers = offersData.map((offersItem) => {

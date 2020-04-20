@@ -22,17 +22,15 @@ export const createEventEditTemplate = (event, eventIndex) => {
     );
   };
 
-  const transferTypesElement = ROUTE_POINTS_TYPES
-    .filter((type) => type.type === TRANSFER_TYPE_NAME)
-    .map((type, index) => {
-      return createTypeElement(type.name, index);
-    }).join(`\n`);
-
-  const activityTypesElement = ROUTE_POINTS_TYPES
-    .filter((type) => type.type === ACTIVITY_TYPE_NAME)
-    .map((type, index) => {
-      return createTypeElement(type.name, index);
-    }).join(`\n`);
+  const getTypesListElement = (type) => {
+    return Object.keys(ROUTE_POINTS_TYPES)
+      .filter((typeName) => {
+        return ROUTE_POINTS_TYPES[typeName].type === type;
+      })
+      .map((typeName, index) => {
+        return createTypeElement(typeName, index);
+      }).join(`\n`);
+  };
 
   const offersElement = event.offers.map((offer, index) => {
     return (`<div class="event__offer-selector">
@@ -77,12 +75,12 @@ export const createEventEditTemplate = (event, eventIndex) => {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Transfer</legend>
-                ${transferTypesElement}
+                ${getTypesListElement(TRANSFER_TYPE_NAME)}
               </fieldset>
 
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Activity</legend>
-                ${activityTypesElement}
+                ${getTypesListElement(ACTIVITY_TYPE_NAME)}
               </fieldset>
             </div>
           </div>
