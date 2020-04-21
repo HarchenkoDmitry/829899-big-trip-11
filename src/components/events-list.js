@@ -1,19 +1,16 @@
 import {createEventTemplate} from './event.js';
 import {createEventEditTemplate} from './event-edit.js';
 
-export const createEventsListTemplate = () => {
-  const AMOUNT_EVENTS = 3;
-  const events = [];
-
-  for (let i = 0; i < AMOUNT_EVENTS; i++) {
-    events.push(createEventTemplate());
-  }
+export const createEventsListTemplate = (routePoints, day) => {
+  const events = routePoints.map((event, index) => {
+    return createEventTemplate(event, index);
+  }).join(`\n`);
 
   return (
     `<ul class="trip-events__list">
-      ${createEventEditTemplate()}
+      ${day === 1 ? createEventEditTemplate(routePoints[0]) : ``}
       
-      ${events.join(``)}
+      ${events}
 
     </ul>`
   );
