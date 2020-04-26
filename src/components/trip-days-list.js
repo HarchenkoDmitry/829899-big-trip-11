@@ -1,7 +1,8 @@
-import {createEventsListTemplate} from './events-list.js';
 import {MONTH_NAMES} from '../const.js';
+import AbstractComponent from './abstract-component.js';
+import EventsListComponent from './events-list.js';
 
-export const createTripDaysListTemplate = (routePoints) => {
+const createTripDaysListTemplate = (routePoints) => {
   const days = [];
   routePoints.forEach((point) => {
     const date = new Date(point.timeStart);
@@ -25,10 +26,10 @@ export const createTripDaysListTemplate = (routePoints) => {
       `<li class="trip-days__item  day">
         <div class="day__info">
           <span class="day__counter">${index + 1}</span>
-          <time class="day__date" datetime="2019-03-18">${MONTH_NAMES[date.getMonth()]} ${date.getDate()}</time>
+          <time class="day__date" datetime="${date.toUTCString()}">${MONTH_NAMES[date.getMonth()]} ${date.getDate()}</time>
         </div>
 
-        ${createEventsListTemplate(routePointsCurrentDay, index + 1)}
+        ${new EventsListComponent(routePointsCurrentDay, index + 1).template}
 
       </li>`
     );
@@ -40,3 +41,14 @@ export const createTripDaysListTemplate = (routePoints) => {
     </ul>`
   );
 };
+
+export default class TripDaysList extends AbstractComponent {
+  constructor(routePoints) {
+    super();
+    this._routePoints = routePoints;
+  }
+
+  get template() {
+    return createTripDaysListTemplate(this._routePoints);
+  }
+}

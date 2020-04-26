@@ -51,6 +51,11 @@ export const ROUTE_POINTS_TYPES = {
     supportingText: `Drive in`,
     iconPath: ICON_PATH + `drive.png`,
   },
+  'flight': {
+    type: TRANSFER_TYPE_NAME,
+    supportingText: `Flight in`,
+    iconPath: ICON_PATH + `flight.png`,
+  },
 };
 
 export const ROUTE_POINTS_TYPES_NAMES = [

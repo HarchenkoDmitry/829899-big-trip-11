@@ -1,7 +1,8 @@
 import {ACTIVITY_TYPE_NAME, DESTINATIONS, ROUTE_POINTS_TYPES, TRANSFER_TYPE_NAME} from '../const.js';
-import {capitalizeString, formatDate, formatTime} from '../utils.js';
+import {capitalizeString, formatDate, formatTime} from '../utils/common.js';
+import AbstractComponent from './abstract-component.js';
 
-export const createEventEditTemplate = (event, eventIndex) => {
+const createEventEditTemplate = (event, eventIndex) => {
   const createTypeElement = (name, index) => {
     return (
       `<div class="event__type-item">
@@ -186,3 +187,15 @@ export const createEventEditTemplate = (event, eventIndex) => {
     </li>`
   );
 };
+
+export default class EventEdit extends AbstractComponent {
+  constructor(event, eventIndex) {
+    super();
+    this._event = event;
+    this._eventIndex = eventIndex;
+  }
+
+  get template() {
+    return createEventEditTemplate(this._event, this._eventIndex);
+  }
+}

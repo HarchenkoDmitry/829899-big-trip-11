@@ -1,4 +1,5 @@
-import {formatTime, getDateDifference} from '../utils.js';
+import {formatTime, getDateDifference} from '../utils/common.js';
+import AbstractComponent from './abstract-component.js';
 
 export const createEventTemplate = (event) => {
   const offersElement = event.offers
@@ -50,3 +51,14 @@ export const createEventTemplate = (event) => {
     </li>`
   );
 };
+
+export default class Event extends AbstractComponent {
+  constructor(event) {
+    super();
+    this._event = event;
+  }
+
+  get template() {
+    return createEventTemplate(this._event);
+  }
+}

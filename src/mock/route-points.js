@@ -1,6 +1,6 @@
 import {Offer} from '../Offer.js';
 import {RoutePoint} from '../RoutePoint.js';
-import {random} from '../utils.js';
+import {random} from '../utils/random.js';
 import {DESTINATIONS, OFFERS, RANDOM_TEXT, ROUTE_POINTS_TYPES, ROUTE_POINTS_TYPES_NAMES} from '../const.js';
 
 
