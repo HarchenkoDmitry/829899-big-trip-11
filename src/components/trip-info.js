@@ -19,6 +19,18 @@ export default class TripInfo extends AbstractComponent {
     this._totalPrice = totalPrice;
   }
 
+  set route(value) {
+    this._route = value;
+  }
+
+  set duration(value) {
+    this._duration = value;
+  }
+
+  set totalPrice(value) {
+    this._totalPrice = value;
+  }
+
   get template() {
     return createTripInfoTemplate(this._route, this._duration, this._totalPrice);
   }

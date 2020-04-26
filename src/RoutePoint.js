@@ -11,13 +11,43 @@ export class RoutePoint {
     this.photos = photos;
   }
 
+  static filterFuturePoints(point) {
+    return point.timeStart > new Date();
+  }
+
+  static filterPastPoints(point) {
+    return point.timeEnd < new Date();
+  }
+
   static compareDate(point1, point2) {
     if (point1.timeStart > point2.timeStart) {
       return 1;
-    }
-    if (point1.timeStart < point2.timeStart) {
+    } else if (point1.timeStart < point2.timeStart) {
       return -1;
+    } else {
+      return 0;
     }
-    return 0;
+  }
+
+  static compareDuration(point1, point2) {
+    const duration1 = point1.timeEnd - point1.timeStart;
+    const duration2 = point2.timeEnd - point2.timeStart;
+    if (duration1 < duration2) {
+      return 1;
+    } else if (duration1 > duration2) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
+
+  static comparePrice(point1, point2) {
+    if (point1.price < point2.price) {
+      return 1;
+    } else if (point1.price > point2.price) {
+      return -1;
+    } else {
+      return 0;
+    }
   }
 }

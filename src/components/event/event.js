@@ -1,5 +1,5 @@
-import {formatTime, getDateDifference} from '../utils/common.js';
-import AbstractComponent from './abstract-component.js';
+import {formatTime, getDateDifference} from '../../utils/common.js';
+import AbstractComponent from '../abstract-component.js';
 
 export const createEventTemplate = (event) => {
   const offersElement = event.offers

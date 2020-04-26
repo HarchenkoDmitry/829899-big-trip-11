@@ -1,14 +1,11 @@
 import {generateRoutePoints} from './mock/route-points.js';
 import {render, RenderPosition} from './utils/render.js';
-import {TripInfo} from './TripInfo.js';
-import TripInfoComponent from './components/trip-info.js';
 import MenuComponent from './components/menu.js';
-import FiltersComponent from './components/filters.js';
-import SortComponent from './components/sort.js';
-import TripDaysListComponent from './components/trip-days-list.js';
+import {Trip} from './Trip.js';
+import {TripController} from './controllers/trip-controller.js';
 
-const routePoints = generateRoutePoints(5);
-const tripInfo = new TripInfo(routePoints);
+const routePoints = generateRoutePoints(10);
+const trip = new Trip(routePoints);
 
 const siteHeaderElement = document.querySelector(`.page-header`);
 const siteTripMainElement = siteHeaderElement.querySelector(`.trip-main`);
@@ -16,8 +13,7 @@ const siteTripControlsElement = siteHeaderElement.querySelector(`.trip-main__tri
 const siteMainElement = document.querySelector(`.page-body__page-main`);
 const siteTripEventsElement = siteMainElement.querySelector(`.trip-events`);
 
-render(siteTripMainElement, new TripInfoComponent(tripInfo.route, tripInfo.duration, tripInfo.totalPrice), RenderPosition.AFTERBEGIN);
 render(siteTripControlsElement, new MenuComponent(), RenderPosition.AFTERBEGIN);
-render(siteTripControlsElement, new FiltersComponent());
-render(siteTripEventsElement, new SortComponent(), RenderPosition.AFTERBEGIN);
-render(siteTripEventsElement, new TripDaysListComponent(tripInfo.routePoints));
+
+const tripController = new TripController(trip, siteTripMainElement, siteTripControlsElement, siteTripEventsElement);
+tripController.render();

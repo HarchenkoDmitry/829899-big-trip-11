@@ -1,6 +1,7 @@
-import {ACTIVITY_TYPE_NAME, DESTINATIONS, ROUTE_POINTS_TYPES, TRANSFER_TYPE_NAME} from '../const.js';
-import {capitalizeString, formatDate, formatTime} from '../utils/common.js';
-import AbstractComponent from './abstract-component.js';
+import {ACTIVITY_TYPE_NAME, ROUTE_POINTS_TYPES, TRANSFER_TYPE_NAME} from '../../consts/route-poinst.js';
+import {DESTINATIONS} from '../../consts/common.js';
+import {capitalizeString, formatDate, formatTime} from '../../utils/common.js';
+import AbstractComponent from '../abstract-component.js';
 
 const createEventEditTemplate = (event, eventIndex) => {
   const createTypeElement = (name, index) => {

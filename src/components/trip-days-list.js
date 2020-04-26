@@ -1,8 +1,9 @@
-import {MONTH_NAMES} from '../const.js';
+import {MONTH_NAMES} from '../consts/common.js';
 import AbstractComponent from './abstract-component.js';
-import EventsListComponent from './events-list.js';
+import EventsListComponent from './event/events-list.js';
+import {sort} from '../consts/sort.js';
 
-const createTripDaysListTemplate = (routePoints) => {
+const createTripDaysListTemplate = (routePoints, currentSort) => {
   const days = [];
   routePoints.forEach((point) => {
     const date = new Date(point.timeStart);
@@ -12,6 +13,15 @@ const createTripDaysListTemplate = (routePoints) => {
       days.push(dateString);
     }
   });
+
+  const dayInfoElement = (dayNumber, date) => {
+    return currentSort === sort.EVENT ?
+      `<span class="day__counter">${dayNumber}</span>
+      <time class="day__date" datetime="${date.toUTCString()}">
+        ${MONTH_NAMES[date.getMonth()]} ${date.getDate()}
+      </time>` :
+      ``;
+  };
 
   const daysListElement = days.map((day, index) => {
     const date = new Date(day);
@@ -25,12 +35,9 @@ const createTripDaysListTemplate = (routePoints) => {
     return (
       `<li class="trip-days__item  day">
         <div class="day__info">
-          <span class="day__counter">${index + 1}</span>
-          <time class="day__date" datetime="${date.toUTCString()}">${MONTH_NAMES[date.getMonth()]} ${date.getDate()}</time>
+          ${dayInfoElement(index + 1, date)}
         </div>
-
-        ${new EventsListComponent(routePointsCurrentDay, index + 1).template}
-
+        ${new EventsListComponent(routePointsCurrentDay).template}
       </li>`
     );
   }).join(`\n`);
@@ -43,12 +50,21 @@ const createTripDaysListTemplate = (routePoints) => {
 };
 
 export default class TripDaysList extends AbstractComponent {
-  constructor(routePoints) {
+  constructor(routePoints, currentSort) {
     super();
     this._routePoints = routePoints;
+    this._currentSort = currentSort;
+  }
+
+  set routePoints(value) {
+    this._routePoints = value;
+  }
+
+  set currentSort(value) {
+    this._currentSort = value;
   }
 
   get template() {
-    return createTripDaysListTemplate(this._routePoints);
+    return createTripDaysListTemplate(this._routePoints, this._currentSort);
   }
 }

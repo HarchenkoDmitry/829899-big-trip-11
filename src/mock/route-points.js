@@ -1,7 +1,8 @@
 import {Offer} from '../Offer.js';
 import {RoutePoint} from '../RoutePoint.js';
 import {random} from '../utils/random.js';
-import {DESTINATIONS, OFFERS, RANDOM_TEXT, ROUTE_POINTS_TYPES, ROUTE_POINTS_TYPES_NAMES} from '../const.js';
+import {DESTINATIONS, OFFERS, RANDOM_TEXT} from '../consts/common.js';
+import {ROUTE_POINTS_TYPES, ROUTE_POINTS_TYPES_NAMES} from '../consts/route-poinst.js';
 
 
 export const generateRoutePoint = () => {
