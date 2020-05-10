@@ -1,8 +1,9 @@
-import {formatTime, getDateDifference} from '../utils.js';
+import {formatTime, getDateDifference} from '../../utils/common.js';
+import Component from '../absctract/component.js';
+import {mode} from '../../models/route-point.js';
 
 export const createEventTemplate = (event) => {
   const offersElement = event.offers
-      .filter((offer) => offer.checked)
       .slice(0, 3)
       .map((offer) => {
         return (`<li class="event__offer">
@@ -19,7 +20,7 @@ export const createEventTemplate = (event) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="${event.type.iconPath}" alt="Event type icon">
         </div>
-        <h3 class="event__title">${event.type.supportingText} ${event.destination}</h3>
+        <h3 class="event__title">${event.type.supportingText} ${event.destination.name}</h3>
   
         <div class="event__schedule">
           <p class="event__time">
@@ -50,3 +51,21 @@ export const createEventTemplate = (event) => {
     </li>`
   );
 };
+
+export default class Event extends Component {
+  constructor(event) {
+    super();
+    this._event = event;
+  }
+
+  onModeChange(handler) {
+    const button = this.element.querySelector(`.event__rollup-btn`);
+    button.addEventListener(`click`, () => {
+      handler(mode.EDIT);
+    });
+  }
+
+  get template() {
+    return createEventTemplate(this._event);
+  }
+}

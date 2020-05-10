@@ -1,14 +1,17 @@
+import Moment from 'moment';
+
 export const formatTime = (date) => {
-  const hours = castTimeFormat(date.getHours());
-  const minutes = castTimeFormat(date.getMinutes());
-  return `${hours}:${minutes}`;
+  return date.format(`HH:MM`);
 };
 
 export const formatDate = (date) => {
-  const day = castTimeFormat(date.getDate());
-  const month = castTimeFormat(date.getMonth() + 1);
-  const year = date.getFullYear().toString().split(``).slice(-2).join(``);
-  return `${day}/${month}/${year}`;
+  return date.format(`DD/MM/YY`);
+};
+
+export const dateDiff = (date1, date2) => {
+  const date1AtMidnight = new Moment(date1.format(`YYYY-MM-DD`));
+  const date2AtMidnight = new Moment(date2.format(`YYYY-MM-DD`));
+  return date1AtMidnight.diff(date2AtMidnight, `days`);
 };
 
 const castTimeFormat = (value) => {
@@ -40,17 +43,9 @@ export const getDateDifference = (date1, date2) => {
   return res.trim();
 };
 
-export const random = {
-  bool() {
-    return Math.random() > 0.5;
-  },
-  int(min, max) {
-    return min + Math.floor(Math.random() * (max - min));
-  },
-  arrayIndex(arr) {
-    return Math.floor(Math.random() * arr.length);
-  },
-  arrayItem(arr) {
-    return arr[this.arrayIndex(arr)];
-  },
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
 };

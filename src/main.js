@@ -1,18 +1,32 @@
-import {createTripInfoTemplate} from './components/trip-info.js';
-import {createMenuTemplate} from './components/menu.js';
-import {createFiltersTemplate} from './components/filters.js';
-import {createSortTemplate} from './components/sort.js';
-import {createTripDaysListTemplate} from './components/trip-days-list.js';
-import {generateRoutePoints} from './mock/route-points.js';
-import {TripInfo} from './TripInfo.js';
+import {Trip} from './models/trip.js';
+import SitePageController from './controllers/site-page.js';
+import {Header} from './components/header.js';
+import API from './api.js';
 
-const routePoints = generateRoutePoints(5);
+const AUTHORIZATION = `Basic dXNlckBwasda9yZAo=`;
+const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
-const tripInfo = new TripInfo(routePoints);
+export const api = new API(END_POINT, AUTHORIZATION);
 
-const render = (html, elem, where = `beforeend`) => {
-  elem.insertAdjacentHTML(where, html);
-};
+const trip = new Trip();
+
+export let offersStore;
+export let destinationsStore;
+
+api.routePoints
+  .then((routePoints) => {
+    trip.routePoints = routePoints;
+  });
+
+api.offers
+  .then((offers) => {
+    offersStore = offers;
+  });
+
+api.destinations
+  .then((destinations) => {
+    destinationsStore = destinations;
+  });
 
 const siteHeaderElement = document.querySelector(`.page-header`);
 const siteTripMainElement = siteHeaderElement.querySelector(`.trip-main`);
@@ -20,8 +34,8 @@ const siteTripControlsElement = siteHeaderElement.querySelector(`.trip-main__tri
 const siteMainElement = document.querySelector(`.page-body__page-main`);
 const siteTripEventsElement = siteMainElement.querySelector(`.trip-events`);
 
-render(createTripInfoTemplate(tripInfo.route, tripInfo.duration, tripInfo.totalPrice), siteTripMainElement, `afterbegin`);
-render(createMenuTemplate(), siteTripControlsElement, `afterbegin`);
-render(createFiltersTemplate(), siteTripControlsElement);
-render(createSortTemplate(), siteTripEventsElement, `afterbegin`);
-render(createTripDaysListTemplate(tripInfo.routePoints), siteTripEventsElement);
+const header = new Header(siteTripMainElement, siteTripControlsElement, trip);
+header.render();
+
+const sitePageController = new SitePageController(siteTripEventsElement, trip);
+sitePageController.render();
