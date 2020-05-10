@@ -1,4 +1,4 @@
-import AbstractComponent from './abstract-component.js';
+import Component from './absctract/component.js';
 import RouteInformationComponent from './route-information.js';
 import TravelCostComponent from './travel-cost.js';
 
@@ -11,24 +11,12 @@ const createTripInfoTemplate = (route, duration, totalPrice) => {
   );
 };
 
-export default class TripInfo extends AbstractComponent {
-  constructor(route, duration, totalPrice) {
+export default class TripInfo extends Component {
+  constructor({route, duration, totalPrice}) {
     super();
     this._route = route;
     this._duration = duration;
     this._totalPrice = totalPrice;
-  }
-
-  set route(value) {
-    this._route = value;
-  }
-
-  set duration(value) {
-    this._duration = value;
-  }
-
-  set totalPrice(value) {
-    this._totalPrice = value;
   }
 
   get template() {

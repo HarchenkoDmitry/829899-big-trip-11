@@ -1,25 +1,17 @@
-import AbstractComponent from '../abstract-component.js';
-import EventComponent from './event.js';
+import Component from '../absctract/component.js';
 
-const createEventsListTemplate = (routePoints) => {
-  const events = routePoints.map((event, index) => {
-    return new EventComponent(event, index).template;
-  }).join(`\n`);
-
+const createEventsListTemplate = () => {
   return (
-    `<ul class="trip-events__list">
-      ${events}
-    </ul>`
+    `<ul class="trip-events__list"></ul>`
   );
 };
 
-export default class EventsList extends AbstractComponent {
-  constructor(routePoints) {
+export default class EventsList extends Component {
+  constructor() {
     super();
-    this._routePoints = routePoints;
   }
 
   get template() {
-    return createEventsListTemplate(this._routePoints);
+    return createEventsListTemplate();
   }
 }

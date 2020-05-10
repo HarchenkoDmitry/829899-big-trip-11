@@ -1,4 +1,4 @@
-import AbstractComponent from './abstract-component.js';
+import Component from './absctract/component.js';
 
 const createRouteInformationTemplate = (route, duration) => {
   return (
@@ -10,7 +10,7 @@ const createRouteInformationTemplate = (route, duration) => {
   );
 };
 
-export default class RouteInformation extends AbstractComponent {
+export default class RouteInformation extends Component {
   constructor(route, duration) {
     super();
     this._route = route;

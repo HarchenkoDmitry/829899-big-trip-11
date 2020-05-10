@@ -1,37 +1,39 @@
-import {filter} from '../consts/filter.js';
-import AbstractComponent from './abstract-component.js';
+import {filterType} from '../consts/filter.js';
+import Component from './absctract/component.js';
 
-const createFiltersTemplate = (currentFilter, arrDisabledFilters) => {
-  const getFilterName = (filterValue) => {
+const createFiltersTemplate = (filters) => {
+  const getFilterLabel = (filterValue) => {
     switch (filterValue) {
-      case filter.EVERYTHING:
+      case filterType.EVERYTHING:
         return `Everything`;
-      case filter.FUTURE:
+      case filterType.FUTURE:
         return `Future`;
-      case filter.PAST:
+      case filterType.PAST:
         return `Past`;
       default:
         return ``;
     }
   };
 
-  const filtersElement = Object.values(filter).map((filterItem) => {
+  const filtersElement = filters.map((filter) => {
+
+    const isDisabledFilter = filter.count === 0;
     return (
       `<div class="trip-filters__filter">
         <input 
-          id="filter-${filterItem}" 
+          id="filter-${filter.name}" 
           class="trip-filters__filter-input visually-hidden" 
           type="radio" 
           name="trip-filter" 
-          value="${filterItem}" 
-          ${filterItem === currentFilter ? `checked` : ``}
-          ${arrDisabledFilters.includes(filterItem) ? `disabled` : ``}
+          value="${filter.name}" 
+          ${filter.isActive ? `checked` : ``}
+          ${isDisabledFilter ? `disabled` : ``}
         >
         <label 
-          class="trip-filters__filter-label ${arrDisabledFilters.includes(filterItem) ? `trip-filters--hidden` : ``}" 
-          for="filter-${filterItem}"
+          class="trip-filters__filter-label ${isDisabledFilter ? `trip-filters--hidden` : ``}" 
+          for="filter-${filter.name}"
         >
-          ${getFilterName(filterItem)}
+          ${getFilterLabel(filter.name)}
         </label>
       </div>`
     );
@@ -41,30 +43,31 @@ const createFiltersTemplate = (currentFilter, arrDisabledFilters) => {
     `<div>
       <h2 class="visually-hidden">Filter events</h2>
       <form class="trip-filters" action="#" method="get">
-        
         ${filtersElement}
-  
         <button class="visually-hidden" type="submit">Accept filter</button>
       </form>
     </div>`
   );
 };
 
-export default class Filters extends AbstractComponent {
-  constructor(currentFilter, arrDisabledFilters) {
+export default class Filters extends Component {
+  constructor(filters) {
     super();
-    this._currentFilter = currentFilter;
-    this._arrDisabledFilters = arrDisabledFilters;
+    this._filters = filters;
   }
 
-  setFilterChangeHandler(handler) {
+  set filters(value) {
+    this._filters = value;
+  }
+
+  get template() {
+    return createFiltersTemplate(this._filters);
+  }
+
+  onFilterChange(handler) {
     const formElement = this.element.querySelector(`form`);
     formElement.addEventListener(`change`, () => {
       handler(formElement[`trip-filter`].value);
     });
-  }
-
-  get template() {
-    return createFiltersTemplate(this._currentFilter, this._arrDisabledFilters);
   }
 }

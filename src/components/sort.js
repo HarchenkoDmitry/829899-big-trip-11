@@ -1,5 +1,5 @@
 import {sort} from '../consts/sort.js';
-import AbstractComponent from './abstract-component.js';
+import Component from './absctract/component.js';
 
 const createSortTemplate = (currentSort) => {
   const getSortName = (sortValue) => {
@@ -45,7 +45,7 @@ const createSortTemplate = (currentSort) => {
   );
 };
 
-export default class Sort extends AbstractComponent {
+export default class Sort extends Component {
   constructor(currentSort) {
     super();
     this._currentSort = currentSort;
@@ -59,7 +59,7 @@ export default class Sort extends AbstractComponent {
     return createSortTemplate(this._currentSort);
   }
 
-  setSortTypeChangeHandler(handler) {
+  onSortChange(handler) {
     const formElement = this.element.querySelector(`form`);
     formElement.addEventListener(`change`, () => {
       handler(formElement[`trip-sort`].value);
