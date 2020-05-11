@@ -3,21 +3,22 @@ import {sort} from '../consts/sort.js';
 import {filterType} from '../consts/filter.js';
 import Observable from '../components/observable.js';
 import {getRoutePointsByFilter} from '../utils/filter.js';
+import {page} from '../consts/page.js';
 
 export class Trip {
   constructor() {
     this._currentSort = sort.EVENT;
     this._currentFilter = filterType.EVERYTHING;
-    this._routePoints = []; // all route points sorted by date
-    this.isAddingPoint = false;
+    this._currentPage = page.TABLE;
 
+    this._routePoints = []; // all route points sorted by date
+    this._isPointAddingMode = false;
+
+    this._pageChangeObservable = new Observable();
+    this._addingModeChangeObservable = new Observable();
     this._routePointsDataChangeObservable = new Observable();
     this._sortChangeObservable = new Observable();
     this._filterChangeObservable = new Observable();
-
-    this._updateIsAddingPoint = this._updateIsAddingPoint.bind(this);
-
-    this._routePointsDataChangeObservable.add(this._updateIsAddingPoint);
   }
 
   get routePoints() {
@@ -38,7 +39,7 @@ export class Trip {
   }
 
   set currentSort(value) {
-    if (Object.values(sort).includes(value)) {
+    if (value !== this._currentSort && Object.values(sort).includes(value)) {
       this._currentSort = value;
       this._sortChangeObservable.notify();
     }
@@ -49,10 +50,38 @@ export class Trip {
   }
 
   set currentFilter(value) {
-    if (Object.values(filterType).includes(value)) {
+    if (value !== this._currentFilter && Object.values(filterType).includes(value)) {
       this._currentFilter = value;
       this._filterChangeObservable.notify();
     }
+  }
+
+  get currentPage() {
+    return this._currentPage;
+  }
+
+  set currentPage(value) {
+    if (value !== this._currentPage && Object.values(page).includes(value)) {
+      this._currentPage = value;
+      this._pageChangeObservable.notify();
+    }
+  }
+
+  get isPointAddingMode() {
+    return this._isPointAddingMode;
+  }
+
+  set isPointAddingMode(value) {
+    this._isPointAddingMode = Boolean(value);
+    this._addingModeChangeObservable.notify();
+  }
+
+  get pageChangeObservable() {
+    return this._pageChangeObservable;
+  }
+
+  get addingModeChangeObservable() {
+    return this._addingModeChangeObservable;
   }
 
   get routePointsDataChangeObservable() {
@@ -93,10 +122,6 @@ export class Trip {
     routePoints = Trip._sortRoutePoints(routePoints, currentSort);
 
     return routePoints;
-  }
-
-  _updateIsAddingPoint() {
-    this.isAddingPoint = this._routePoints.findIndex((point) => point.mode === mode.ADD) !== -1;
   }
 
   addRoutePoint(point) {

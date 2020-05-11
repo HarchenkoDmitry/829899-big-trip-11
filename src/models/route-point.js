@@ -10,16 +10,14 @@ export const mode = {
   ADD: `add`,
 };
 
-export const defaultData = {
+export const newPointData = {
   'base_price': ``,
   'type': ROUTE_POINTS_TYPES[0].name,
   'date_from': new Moment().format(),
   'date_to': new Moment().format(),
   'offers': [],
   'destination': {
-    'description': `Chamonix, is a beautiful city, a true asian pearl, with crowded streets.`,
-    'name': `Chamonix`,
-    'pictures': [],
+    'name': ``
   },
   'is_favorite': false,
 };
@@ -30,7 +28,7 @@ export class RoutePoint {
     this._type = ROUTE_POINTS_TYPES.find((typeItem) => typeItem.name === data[`type`]);
     this._timeStart = new Moment(data[`date_from`]);
     this._timeEnd = new Moment(data[`date_to`]);
-    this._price = data[`base_price`] !== undefined ? Number(data[`base_price`]) : ``;
+    this._price = Number(data[`base_price`]);
     this._offers = data[`offers`].map((offer) => new Offer(offer));
     this._destination = new Destination(data[`destination`]);
     this._isFavorite = Boolean(data[`is_favorite`]);
@@ -62,7 +60,6 @@ export class RoutePoint {
 
   set type(value) {
     this._type = value;
-    this._onDataChangeObservable.notify();
   }
 
   get timeStart() {
@@ -113,10 +110,6 @@ export class RoutePoint {
   set isFavorite(value) {
     this._isFavorite = value;
     this._onDataChangeObservable.notify();
-  }
-
-  get onDataChangeObservable() {
-    return this._onDataChangeObservable;
   }
 
   get mode() {

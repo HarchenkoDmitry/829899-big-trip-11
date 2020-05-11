@@ -51,10 +51,6 @@ export default class Sort extends Component {
     this._currentSort = currentSort;
   }
 
-  set currentSort(value) {
-    this._currentSort = value;
-  }
-
   get template() {
     return createSortTemplate(this._currentSort);
   }

@@ -1,9 +1,9 @@
 import Controller from '../components/absctract/controller.js';
 import AddEventButtonComponent from '../components/add-event-button.js';
-import {defaultData, mode, RoutePoint} from '../models/route-point.js';
-import {api} from '../main.js';
+import {mode} from '../models/route-point.js';
 import {filterType} from '../consts/filter.js';
 import {sort as sortType} from '../consts/sort.js';
+import {page} from '../consts/page.js';
 
 
 export default class AddEventButtonController extends Controller {
@@ -12,26 +12,22 @@ export default class AddEventButtonController extends Controller {
 
     this._onClick = this._onClick.bind(this);
 
-    this._model.routePointsDataChangeObservable.add(this.render);
+    this._model.addingModeChangeObservable.add(this.render);
   }
 
   get viewComponent() {
-    const viewComponent = new AddEventButtonComponent(this._model.isAddingPoint);
+    const viewComponent = new AddEventButtonComponent(this._model.isPointAddingMode);
     viewComponent.onClick(this._onClick);
     return viewComponent;
   }
 
   _onClick() {
-    const newPoint = new RoutePoint(defaultData);
-    api.createPoint(newPoint)
-      .then((point) => {
-        this._model.routePoints.forEach((routePoint) => {
-          routePoint.mode = mode.DEFAULT;
-        });
-        point.mode = mode.ADD;
-        this._model.currentFilter = filterType.EVERYTHING;
-        this._model.currentSort = sortType.EVENT;
-        this._model.addRoutePoint(point);
-      });
+    this._model.isPointAddingMode = true;
+    this._model.currentPage = page.TABLE;
+    this._model.currentFilter = filterType.EVERYTHING;
+    this._model.currentSort = sortType.EVENT;
+    this._model.routePoints.forEach((routePoint) => {
+      routePoint.mode = mode.DEFAULT;
+    });
   }
 }

@@ -1,12 +1,12 @@
 import Controller from '../components/absctract/controller.js';
 import TripInfoComponent from '../components/trip-info.js';
-import {RenderPosition} from '../utils/render.js';
+import {enumPosition} from '../utils/render.js';
 
 
 export default class TripInfoController extends Controller {
   constructor(container, model) {
     super(container, model);
-    this.place = RenderPosition.AFTERBEGIN;
+    this.place = enumPosition.AFTERBEGIN;
 
     this._model.routePointsDataChangeObservable.add(this.render);
   }

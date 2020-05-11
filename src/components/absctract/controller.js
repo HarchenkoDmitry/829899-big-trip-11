@@ -23,12 +23,16 @@ export default class Controller {
   }
 
   render() {
-    if (this._viewComponent) {
-      remove(this._viewComponent);
-    }
+    this.remove();
 
     this._viewComponent = this.viewComponent;
 
     render(this._container, this._viewComponent, this._place);
+  }
+
+  remove() {
+    if (this._viewComponent) {
+      remove(this._viewComponent);
+    }
   }
 }

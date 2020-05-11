@@ -1,11 +1,13 @@
 import EventComponent from '../components/event/event.js';
 import EventEditComponent from '../components/event/event-edit.js';
+import EventAddComponent from '../components/event/event-add.js';
 import Controller from '../components/absctract/controller.js';
 import {mode} from '../models/route-point.js';
 import {ROUTE_POINTS_TYPES} from '../consts/route-poinst.js';
 import _ from 'lodash';
 import Moment from 'moment';
 import {api} from '../main.js';
+import {enumPosition} from '../utils/render.js';
 
 
 export default class RoutePointController extends Controller {
@@ -19,8 +21,6 @@ export default class RoutePointController extends Controller {
 
     this._viewComponent = null;
 
-    this._routePoint.onDataChangeObservable.add(this.render);
-
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._onModeChange = this._onModeChange.bind(this);
     this._onFavoriteChange = this._onFavoriteChange.bind(this);
@@ -30,8 +30,10 @@ export default class RoutePointController extends Controller {
     this._onTimeEndChange = this._onTimeEndChange.bind(this);
     this._onPriceChange = this._onPriceChange.bind(this);
     this._onOfferChange = this._onOfferChange.bind(this);
-    this._onSubmitForm = this._onSubmitForm.bind(this);
+    this._onAddPoint = this._onAddPoint.bind(this);
+    this._onUpdatePoint = this._onUpdatePoint.bind(this);
     this._onDelete = this._onDelete.bind(this);
+    this._onCancel = this._onCancel.bind(this);
   }
 
   get viewComponent() {
@@ -48,32 +50,53 @@ export default class RoutePointController extends Controller {
           this._copyRoutePoint = _.cloneDeep(this._routePoint);
         }
         this._viewComponent = new EventEditComponent(this._copyRoutePoint);
-        this._addHandlers(this._viewComponent);
         break;
 
       case mode.ADD:
         document.addEventListener(`keydown`, this._onEscKeyDown);
+        this.place = enumPosition.AFTEREND;
         if (this._copyRoutePoint === null) {
           this._copyRoutePoint = _.cloneDeep(this._routePoint);
         }
-        this._viewComponent = new EventEditComponent(this._copyRoutePoint);
-        this._addHandlers(this._viewComponent);
-
+        this._viewComponent = new EventAddComponent(this._copyRoutePoint);
     }
-    this._viewComponent.onModeChange(this._onModeChange);
+    this._addHandlers(this._viewComponent);
     return this._viewComponent;
   }
 
   _addHandlers(component) {
-    component.onFavoriteChange(this._onFavoriteChange);
-    component.onTypeChange(this._onTypeChange);
-    component.onDestinationChange(this._onDestinationChange);
-    component.onTimeStartChange(this._onTimeStartChange);
-    component.onTimeEndChange(this._onTimeEndChange);
-    component.onPriceChange(this._onPriceChange);
-    component.onOfferChange(this._onOfferChange);
-    component.onSubmitForm(this._onSubmitForm);
-    component.onDelete(this._onDelete);
+    switch (this._routePoint.mode) {
+      case mode.DEFAULT: {
+        component.onModeChange(this._onModeChange);
+        break;
+      }
+
+      case mode.EDIT: {
+        component.onTypeChange(this._onTypeChange);
+        component.onDestinationChange(this._onDestinationChange);
+        component.onTimeStartChange(this._onTimeStartChange);
+        component.onTimeEndChange(this._onTimeEndChange);
+        component.onPriceChange(this._onPriceChange);
+        component.onOfferChange(this._onOfferChange);
+        component.onSubmitForm(this._onUpdatePoint);
+        component.onFavoriteChange(this._onFavoriteChange);
+        component.onDelete(this._onDelete);
+        component.onModeChange(this._onModeChange);
+        break;
+      }
+
+      case mode.ADD: {
+        component.onTypeChange(this._onTypeChange);
+        component.onDestinationChange(this._onDestinationChange);
+        component.onTimeStartChange(this._onTimeStartChange);
+        component.onTimeEndChange(this._onTimeEndChange);
+        component.onPriceChange(this._onPriceChange);
+        component.onOfferChange(this._onOfferChange);
+        component.onSubmitForm(this._onAddPoint);
+        component.onCancel(this._onCancel);
+        break;
+      }
+    }
   }
 
   _onModeChange(value) {
@@ -101,7 +124,7 @@ export default class RoutePointController extends Controller {
 
   _onDestinationChange(destination) {
     this._copyRoutePoint.destination = destination;
-    this._routePoint.onDataChangeObservable.notify();
+    this.render();
   }
 
   _onPriceChange(price) {
@@ -111,8 +134,8 @@ export default class RoutePointController extends Controller {
   _onEscKeyDown(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
     if (isEscKey) {
+      this._removeListener();
       this._routePoint.mode = mode.DEFAULT;
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }
 
@@ -132,26 +155,53 @@ export default class RoutePointController extends Controller {
     }
   }
 
-  _onSubmitForm() {
+  _onUpdatePoint() {
     this._copyRoutePoint.isSaving = true;
-    this._routePoint.onDataChangeObservable.notify();
+    this.render();
     api.updatePoint(this._routePoint.id, this._copyRoutePoint)
       .then((response) => {
         this._routePoint = Object.assign(this._routePoint, response);
+        this._removeListener();
         this._routePoint.mode = mode.DEFAULT;
         this._routePoint.isSaving = false;
         this._model.routePointsDataChangeObservable.notify();
       });
   }
 
+  _onAddPoint() {
+    this._copyRoutePoint.isSaving = true;
+    this.render();
+    api.createPoint(this._copyRoutePoint)
+      .then((point) => {
+        this._removeListener();
+        this._routePoint.isSaving = false;
+        this._model.addRoutePoint(point);
+        this._model.isPointAddingMode = false;
+        this._model.routePointsDataChangeObservable.notify();
+      });
+  }
+
   _onDelete() {
     this._copyRoutePoint.isDeleting = true;
-    this._routePoint.onDataChangeObservable.notify();
+    this.render();
     api.deletePoint(this._routePoint.id)
       .then((response) => {
         if (response.ok) {
+          this._removeListener();
+          this._routePoint.mode = mode.DEFAULT;
+          this._routePoint.isDeleting = false;
           this._model.deleteRoutePoint(this._routePoint.id);
         }
       });
+  }
+
+  _onCancel() {
+    this._removeListener();
+    this._model.isPointAddingMode = false;
+  }
+
+  _removeListener() {
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._copyRoutePoint = null;
   }
 }
