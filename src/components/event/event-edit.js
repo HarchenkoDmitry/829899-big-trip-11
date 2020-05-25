@@ -4,9 +4,8 @@ import Component from '../absctract/component.js';
 import {mode} from '../../models/route-point.js';
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
-import {destinationsStore, offersStore} from '../../main.js';
 
-const createEventEditTemplate = (event) => {
+const createEventEditTemplate = (event, offersStore, destinationsStore) => {
   const createTypeElement = (name, index) => {
     return (
       `<div class="event__type-item">
@@ -219,9 +218,11 @@ const createEventEditTemplate = (event) => {
 };
 
 export default class EventEdit extends Component {
-  constructor(event) {
+  constructor(event, offersStore, destinationsStore) {
     super();
     this._event = event;
+    this._offersStore = offersStore;
+    this._destinationsStore = destinationsStore;
     this._flatpickr = null;
     this._applyFlatpickr();
 
@@ -229,7 +230,7 @@ export default class EventEdit extends Component {
   }
 
   get template() {
-    return createEventEditTemplate(this._event, this._event.id);
+    return createEventEditTemplate(this._event, this._offersStore, this._destinationsStore);
   }
 
   onModeChange(handler) {
@@ -267,8 +268,8 @@ export default class EventEdit extends Component {
     const destinationElement = this._formElement.elements[`event-destination`];
     destinationElement.classList.remove(`input-error`);
     destinationElement.addEventListener(`change`, () => {
-      if (destinationsStore.findIndex((destination) => destination.name === destinationElement.value) !== -1) {
-        handler(destinationsStore.find((destination) => destination.name === destinationElement.value));
+      if (this._destinationsStore.findIndex((destination) => destination.name === destinationElement.value) !== -1) {
+        handler(this._destinationsStore.find((destination) => destination.name === destinationElement.value));
       } else {
         destinationElement.classList.add(`input-error`);
       }
@@ -290,7 +291,7 @@ export default class EventEdit extends Component {
   }
 
   onOfferChange(handler) {
-    const allOffers = offersStore.find((offer) => offer.type === this._event.type.name).offers;
+    const allOffers = this._offersStore.find((offer) => offer.type === this._event.type.name).offers;
 
     const offersElements = this._formElement.elements[`event-offer`];
     if (offersElements) {

@@ -24,9 +24,9 @@ export const capitalizeString = (string) => {
 
 export const getDateDifference = (date1, date2) => {
   const diff = Math.floor(Math.abs(date2 - date1) / 1000 / 60);
-  let numberOfMinutes = diff % 60;
-  let numberOfHours = Math.floor(diff / 60 % 24);
-  let numberOfDays = Math.floor(diff / 60 / 24);
+  const numberOfMinutes = diff % 60;
+  const numberOfHours = Math.floor(diff / 60 % 24);
+  const numberOfDays = Math.floor(diff / 60 / 24);
 
   let res = ``;
 

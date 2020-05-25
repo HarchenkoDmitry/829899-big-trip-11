@@ -13,6 +13,8 @@ export class Trip {
 
     this._routePoints = []; // all route points sorted by date
     this._isPointAddingMode = false;
+    this._offersStore = [];
+    this._destinationsStore = [];
 
     this._pageChangeObservable = new Observable();
     this._addingModeChangeObservable = new Observable();
@@ -94,6 +96,24 @@ export class Trip {
 
   get filterChangeObservable() {
     return this._filterChangeObservable;
+  }
+
+  get offersStore() {
+    return this._offersStore;
+  }
+
+  set offersStore(value) {
+    this._offersStore = value;
+    this._routePointsDataChangeObservable.notify();
+  }
+
+  get destinationsStore() {
+    return this._destinationsStore;
+  }
+
+  set destinationsStore(value) {
+    this._destinationsStore = value;
+    this._routePointsDataChangeObservable.notify();
   }
 
   static _sortRoutePoints(routePoints, sortType) {

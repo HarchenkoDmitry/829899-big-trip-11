@@ -3,9 +3,8 @@ import {capitalizeString, formatDate, formatTime} from '../../utils/common.js';
 import Component from '../absctract/component.js';
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
-import {destinationsStore, offersStore} from '../../main.js';
 
-const createEventEditTemplate = (event) => {
+const createEventAddTemplate = (event, offersStore, destinationsStore) => {
   const createTypeElement = (name, index) => {
     return (
       `<div class="event__type-item">
@@ -199,11 +198,12 @@ const createEventEditTemplate = (event) => {
   );
 };
 
-export default class EventEdit extends Component {
-  constructor(event, eventIndex) {
+export default class EventAdd extends Component {
+  constructor(event, offerStore, destinationsStore) {
     super();
     this._event = event;
-    this._eventIndex = eventIndex;
+    this._offerStore = offerStore;
+    this._destinationsStore = destinationsStore;
     this._flatpickr = null;
     this._applyFlatpickr();
 
@@ -211,7 +211,7 @@ export default class EventEdit extends Component {
   }
 
   get template() {
-    return createEventEditTemplate(this._event, this._eventIndex);
+    return createEventAddTemplate(this._event, this._offerStore, this._destinationsStore);
   }
 
   onTypeChange(handler) {
@@ -236,7 +236,7 @@ export default class EventEdit extends Component {
 
     destinationElement.addEventListener(`change`, () => {
       if (this._validateDestination()) {
-        handler(destinationsStore.find((destination) => destination.name === destinationElement.value));
+        handler(this._destinationsStore.find((destination) => destination.name === destinationElement.value));
       }
     });
   }
@@ -256,7 +256,7 @@ export default class EventEdit extends Component {
   }
 
   onOfferChange(handler) {
-    const allOffers = offersStore.find((offer) => offer.type === this._event.type.name).offers;
+    const allOffers = this._offerStore.find((offer) => offer.type === this._event.type.name).offers;
 
     const offersElements = this._formElement.elements[`event-offer`];
     if (offersElements) {
@@ -289,7 +289,7 @@ export default class EventEdit extends Component {
     const destinationElement = this._formElement.elements[`event-destination`];
     destinationElement.classList.remove(`input-error`);
 
-    if (destinationsStore.findIndex((destination) => destination.name === destinationElement.value) === -1) {
+    if (this._destinationsStore.findIndex((destination) => destination.name === destinationElement.value) === -1) {
       destinationElement.classList.add(`input-error`);
       isValid = false;
     }

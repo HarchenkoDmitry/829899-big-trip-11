@@ -10,9 +10,6 @@ export const api = new API(END_POINT, AUTHORIZATION);
 
 const trip = new Trip();
 
-export let offersStore;
-export let destinationsStore;
-
 api.routePoints
   .then((routePoints) => {
     trip.routePoints = routePoints;
@@ -20,12 +17,12 @@ api.routePoints
 
 api.offers
   .then((offers) => {
-    offersStore = offers;
+    trip.offersStore = offers;
   });
 
 api.destinations
   .then((destinations) => {
-    destinationsStore = destinations;
+    trip.destinationsStore = destinations;
   });
 
 const siteHeaderElement = document.querySelector(`.page-header`);

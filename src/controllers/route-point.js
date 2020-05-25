@@ -49,7 +49,7 @@ export default class RoutePointController extends Controller {
         if (this._copyRoutePoint === null) {
           this._copyRoutePoint = _.cloneDeep(this._routePoint);
         }
-        this._viewComponent = new EventEditComponent(this._copyRoutePoint);
+        this._viewComponent = new EventEditComponent(this._copyRoutePoint, this._model.offersStore, this._model.destinationsStore);
         break;
 
       case mode.ADD:
@@ -58,7 +58,7 @@ export default class RoutePointController extends Controller {
         if (this._copyRoutePoint === null) {
           this._copyRoutePoint = _.cloneDeep(this._routePoint);
         }
-        this._viewComponent = new EventAddComponent(this._copyRoutePoint);
+        this._viewComponent = new EventAddComponent(this._copyRoutePoint, this._model.offersStore, this._model.destinationsStore);
     }
     this._addHandlers(this._viewComponent);
     return this._viewComponent;
